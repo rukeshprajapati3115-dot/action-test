@@ -1,36 +1,46 @@
-# This is a basic workflow to help you get started with Actions
+name: Run Calendar Sync
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  repository_dispatch:
+    types: [run-calendar-sync]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+  schedule:
+    - cron: "0 22 * * 0-4"   # 08:00 AM AEST = 22:00 UTC previous day (Mon–Fri)
+    - cron: "0 23 * * 0-4"   # 09:00 AM AEST = 23:00 UTC previous day (Mon–Fri)
+    - cron: "0 1 * * 1-5"    # 11:00 AM AEST = 01:00 UTC (Mon–Fri)
+    - cron: "0 3 * * 1-5"    # 01:00 PM AEST = 03:00 UTC (Mon–Fri)
+    - cron: "0 5 * * 1-5"    # 03:00 PM AEST = 05:00 UTC (Mon–Fri)
+
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  calendar-sync:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      # -------------------- Checkout repo -------------------- #
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      # -------------------- Set up Python -------------------- #
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      # -------------------- Install Dependencies -------------------- #
+      - name: Install Dependencies
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # -------------------- Authenticate with GCP -------------------- #
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.SEC_FORMATTER }}
+
+      # -------------------- Run Calendar Sync Script -------------------- #
+      - name: Run Calendar Sync Script
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.SEC_FORMATTER }}
+        run: python app.py
