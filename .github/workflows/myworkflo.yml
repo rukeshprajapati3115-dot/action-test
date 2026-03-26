@@ -36,11 +36,8 @@ jobs:
       # -------------------- Authenticate with GCP -------------------- #
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.SEC_FORMATTER }}
+
 
       # -------------------- Run Calendar Sync Script -------------------- #
       - name: Run Calendar Sync Script
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.SEC_FORMATTER }}
-        run: python app.py
+        run: echo "This is it"
