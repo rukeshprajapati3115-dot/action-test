@@ -26,19 +26,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
-      # -------------------- Install Dependencies -------------------- #
-      - name: Install Dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-
-      # -------------------- Authenticate with GCP -------------------- #
-      - name: Authenticate to GCP
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: ${{ secrets.SEC_FORMATTER }}
-
+          
       # -------------------- Run Calendar Sync Script -------------------- #
       - name: Run Calendar Sync Script
         run: echo test, and deploy the data
