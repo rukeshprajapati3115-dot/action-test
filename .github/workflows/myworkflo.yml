@@ -41,6 +41,4 @@ jobs:
 
       # -------------------- Run Calendar Sync Script -------------------- #
       - name: Run Calendar Sync Script
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.SEC_FORMATTER }}
-        run: python app.py
+        echo test, and deploy the data
