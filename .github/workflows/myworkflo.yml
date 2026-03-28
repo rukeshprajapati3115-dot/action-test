@@ -41,4 +41,4 @@ jobs:
 
       # -------------------- Run Calendar Sync Script -------------------- #
       - name: Run Calendar Sync Script
-        echo test, and deploy the data
+        run: echo test, and deploy the data
